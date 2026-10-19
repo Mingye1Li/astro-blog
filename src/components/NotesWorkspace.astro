@@ -9,8 +9,10 @@ import { fallback as t } from '../i18n/resources.js';
     <form id="noteForm">
       <Text as="label" for="noteTitle" k="workspace.titleLabel" />
       <input id="noteTitle" data-i18n-placeholder="workspace.titlePlaceholder" placeholder={t('workspace.titlePlaceholder')} required maxlength="120" />
-      <Text as="label" for="noteBody" k="workspace.bodyLabel" />
+      <Text as="label" id="noteBodyLabel" for="noteBody" k="workspace.bodyLabel" />
+      <Text as="p" id="markdownHelp" class="markdown-help" k="markdown.help" />
       <textarea id="noteBody" rows="9" data-i18n-placeholder="workspace.bodyPlaceholder" placeholder={t('workspace.bodyPlaceholder')} maxlength="20000"></textarea>
+      <p id="noteLength" class="markdown-length"></p>
       <div class="actions">
         <Text as="button" id="saveBtn" class="primary" type="submit" k="workspace.save" />
         <Text as="button" id="cancelBtn" class="secondary" type="button" hidden k="workspace.cancel" />

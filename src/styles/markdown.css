@@ -1,0 +1,67 @@
+#noteWorkspace { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+#noteWorkspace > * { min-width: 0; }
+.markdown-help, .markdown-length { color: var(--muted); font-size: 11px; line-height: 1.7; }
+.markdown-help { margin: 0 0 12px; }
+.markdown-length { text-align: right; margin: 8px 0 0; }
+.markdown-length.error { color: var(--danger); }
+.EasyMDEContainer { min-width: 0; }
+.EasyMDEContainer .editor-toolbar {
+  opacity: 1; background: var(--surface-soft); border-color: var(--border);
+  border-radius: 8px 8px 0 0; padding: 6px; display: flex; flex-wrap: wrap; gap: 2px;
+}
+.EasyMDEContainer .editor-toolbar::before, .EasyMDEContainer .editor-toolbar::after { display: none; }
+.EasyMDEContainer .editor-toolbar button {
+  color: var(--text); background: transparent; border-color: transparent; width: 30px; height: 30px;
+  font-family: inherit; font-weight: 650; font-size: 15px; line-height: 1; border-radius: 4px;
+}
+.EasyMDEContainer .editor-toolbar button.italic { font-style: italic; }
+.EasyMDEContainer .editor-toolbar button.code { font-size: 12px; }
+.EasyMDEContainer .editor-toolbar button:hover, .EasyMDEContainer .editor-toolbar button.active {
+  background: var(--surface); border-color: var(--border); color: var(--green);
+}
+.EasyMDEContainer .editor-toolbar button:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.EasyMDEContainer .editor-toolbar i.separator { border-color: var(--border); margin: 4px 3px; height: 20px; }
+.EasyMDEContainer .CodeMirror {
+  background: var(--input); color: var(--text); border-color: var(--border); border-radius: 0 0 8px 8px;
+  padding: 12px 10px; font: 13px/1.8 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.EasyMDEContainer .CodeMirror-focused { border-color: var(--focus); }
+.EasyMDEContainer .CodeMirror-cursor { border-left-color: var(--text); }
+.EasyMDEContainer .CodeMirror-selected { background: var(--surface-soft); }
+.EasyMDEContainer .CodeMirror-focused .CodeMirror-selected { background: color-mix(in srgb, var(--green) 22%, var(--input)); }
+.EasyMDEContainer .CodeMirror-placeholder { color: var(--placeholder); }
+.EasyMDEContainer .cm-header, .EasyMDEContainer .cm-link, .EasyMDEContainer .cm-url,
+.EasyMDEContainer .cm-quote, .EasyMDEContainer .cm-tag, .EasyMDEContainer .cm-attribute,
+.EasyMDEContainer .cm-string { color: var(--green); }
+.EasyMDEContainer .cm-comment { background: var(--surface-soft); color: var(--body-text); }
+.EasyMDEContainer .cm-header-1 { font-size: 1.4em; }
+.EasyMDEContainer .cm-header-2 { font-size: 1.25em; }
+.EasyMDEContainer .cm-header-3, .EasyMDEContainer .cm-header-4,
+.EasyMDEContainer .cm-header-5, .EasyMDEContainer .cm-header-6 { font-size: 1.1em; }
+.EasyMDEContainer .editor-preview, .EasyMDEContainer .editor-preview-full {
+  background: var(--surface); color: var(--text); padding: 16px;
+}
+.markdown-body { white-space: normal; overflow-wrap: anywhere; font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif; font-size: 14px; line-height: 1.8; }
+.markdown-body > :first-child { margin-top: 0; }
+.markdown-body > :last-child { margin-bottom: 0; }
+.markdown-body p, .markdown-body ul, .markdown-body ol, .markdown-body blockquote,
+.markdown-body pre, .markdown-body table { margin: 0 0 1em; }
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,
+.markdown-body h5, .markdown-body h6 { color: var(--text); font-weight: 650; letter-spacing: 0; line-height: 1.4; margin: 1.2em 0 .5em; }
+.markdown-body h1 { font-size: 1.65em; }
+.markdown-body h2 { font-size: 1.4em; }
+.markdown-body h3 { font-size: 1.2em; }
+.markdown-body h4, .markdown-body h5, .markdown-body h6 { font-size: 1em; }
+.markdown-body ul, .markdown-body ol { padding-left: 1.6em; }
+.markdown-body li > p { margin-bottom: .3em; }
+.markdown-body a { color: var(--green); text-decoration: underline; text-underline-offset: 3px; }
+.markdown-body blockquote { border-left: 3px solid var(--accent); padding: 0 0 0 1em; color: var(--muted); }
+.markdown-body code { font: .9em/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; background: var(--surface-soft); padding: .15em .35em; border-radius: 4px; }
+.markdown-body pre { background: var(--surface-soft); padding: 14px; border-radius: 8px; overflow-x: auto; white-space: pre; }
+.markdown-body pre code { background: transparent; padding: 0; border-radius: 0; }
+.markdown-body table { border-collapse: collapse; display: block; max-width: 100%; overflow-x: auto; }
+.markdown-body th, .markdown-body td { border: 1px solid var(--border); padding: 7px 10px; text-align: left; }
+.markdown-body th { background: var(--surface-soft); }
+.markdown-body hr { border: 0; border-top: 1px solid var(--border); margin: 1.4em 0; }
+.markdown-body img { max-width: 100%; height: auto; border-radius: 6px; }
+@media (max-width: 850px) { #noteWorkspace { grid-template-columns: minmax(0, 1fr); } }

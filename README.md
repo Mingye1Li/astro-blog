@@ -24,6 +24,14 @@ theme-change persists explicit theme choices in `liubai-theme`; System clears th
 
 `pnpm test` checks translation coverage, English pluralization, and interpolation. GitHub Actions runs the tests before building.
 
+## Markdown notes
+
+Approved users write notes in EasyMDE, with formatting controls, keyboard shortcuts, undo/redo, and a rendered preview. Toolbar labels follow the selected language; the editor and previews use the site's light/dark theme tokens. The editor loads only when an approved user opens the workspace. Tab moves focus out of the editor.
+
+The existing `private_notes.body` field stores the original Markdown source; no database migration is needed. Editing loads that source back into the editor. Marked renders both previews and saved note cards, then DOMPurify sanitizes the resulting HTML. Script/event-handler payloads, unsafe URLs, forms, embedded frames, and application-specific IDs/data attributes are removed. Plain-text notes remain readable, including line breaks. User Markdown is never sent to a conversion service.
+
+EasyMDE's local autosave, remote spell-check dictionaries, and automatic icon downloads are disabled. Clearing an editor also clears its undo history. Notes retain the existing 20,000-character limit, with a visible counter and a validation message before saving oversized content. Markdown rendering and sanitization are covered by `tests/markdown.test.js`.
+
 ## Backend
 
 Connected project: `github-pages` (`meqykrquanvoapjphtun`). The `private_notes` table and four row-level security policies are already deployed. `supabase/schema.sql` documents the schema for a fresh project; do not rerun it on this configured project.

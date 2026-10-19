@@ -2,6 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_KEY } from '../lib/supabase-config.js';
 import { t, preferencesReady, localizedText, localizedAttribute, dateText } from '../i18n/client.js';
 import './theme.js';
+import { renderMarkdown, MAX_NOTE_LENGTH } from '../lib/markdown.js';
+import { ensureMarkdownEditor, markdownValue, setMarkdownValue } from './markdown-editor.js';
 const $ = (id) => document.getElementById(id);
 let client, userId = null, revision = 0, editingId = null, authBusy = false;
 let access = null, accessRevision = 0, accountsRevision = 0;
@@ -28,6 +30,7 @@ function translatedError(key) {
 function resetEditor() {
   editingId = null;
   $('noteForm').reset();
+  setMarkdownValue('');
   localizedText($('editorTitle'), 'workspace.newNote');
   $('cancelBtn').hidden = true;
 }
@@ -79,6 +82,8 @@ async function loadAccess() {
       localizedText($('accessTitle'), rejected ? 'access.rejectedTitle' : 'access.pendingTitle');
       localizedText($('accessDescription'), rejected ? 'access.rejectedDescription' : 'access.pendingDescription');
     } else {
+      await ensureMarkdownEditor();
+      if (owner !== userId || request !== accessRevision) return;
       await loadNotes();
       if (access?.role === 'admin' && owner === userId && request === accessRevision) await loadAccounts();
     }
@@ -141,7 +146,7 @@ function accountElement(account) {
 function noteElement(note) {
   const article = document.createElement('article'); article.className = 'note';
   const title = document.createElement('h3'); title.textContent = note.title;
-  const body = document.createElement('p'); body.className = 'note-body'; body.textContent = note.body;
+  const body = document.createElement('div'); body.className = 'note-body markdown-body'; body.innerHTML = renderMarkdown(note.body);
   const meta = document.createElement('div'); meta.className = 'note-meta';
   const time = document.createElement('time'); time.dateTime = note.created_at;
   time.dataset.localizedDate = '';
@@ -150,7 +155,7 @@ function noteElement(note) {
   const edit = document.createElement('button'); edit.type = 'button'; localizedText(edit, 'workspace.edit');
   localizedAttribute(edit, 'aria-label', 'workspace.editLabel', { title: note.title });
   edit.addEventListener('click', () => {
-    editingId = note.id; $('noteTitle').value = note.title; $('noteBody').value = note.body;
+    editingId = note.id; $('noteTitle').value = note.title; setMarkdownValue(note.body);
     localizedText($('editorTitle'), 'workspace.editNote'); $('cancelBtn').hidden = false; $('noteTitle').focus();
   });
   const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'delete'; localizedText(remove, 'workspace.delete');
@@ -216,7 +221,9 @@ $('noteForm').addEventListener('submit', async (event) => {
   if (!userId || access?.status !== 'approved' || $('saveBtn').disabled) return;
   const owner = userId, title = $('noteTitle').value.trim();
   if (!title) { message('workspace.titleRequired', true); return; }
-  const values = { title, body: $('noteBody').value };
+  const body = markdownValue();
+  if (body.length > MAX_NOTE_LENGTH) { message('markdown.tooLong', true, { total: MAX_NOTE_LENGTH }); return; }
+  const values = { title, body };
   $('saveBtn').disabled = $('cancelBtn').disabled = true;
   try {
     const query = editingId

@@ -61,7 +61,7 @@ export const preferencesReady = i18n.use(LanguageDetector).init({
     caches: ['localStorage'],
     convertDetectedLanguage: (code) => code.toLowerCase().startsWith('zh') ? 'zh-CN' : code,
   },
-  interpolation: { escapeValue: false }, // All translations are written with textContent, never innerHTML.
+  interpolation: { escapeValue: false }, // Translation strings use textContent; Markdown is separately sanitized.
 }).then(() => {
   translatePage();
   i18n.on('languageChanged', translatePage);
@@ -71,7 +71,7 @@ export const preferencesReady = i18n.use(LanguageDetector).init({
   document.querySelectorAll('form').forEach((form) => {
     form.addEventListener('invalid', (event) => {
       const input = event.target;
-      const key = input.validity.valueMissing ? 'validation.required' : input.validity.typeMismatch ? 'validation.email' : input.dataset.validationKey;
+      const key = input.validity?.valueMissing ? 'validation.required' : input.validity?.typeMismatch ? 'validation.email' : input.dataset.validationKey;
       if (key) { input.dataset.validationKey = key; input.setCustomValidity(t(key)); }
     }, true);
     form.addEventListener('input', (event) => {
