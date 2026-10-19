@@ -1,0 +1,14 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import AuthPanel from '../components/AuthPanel.astro';
+import Dashboard from '../components/Dashboard.astro';
+---
+<SiteLayout>
+  <AuthPanel />
+  <Dashboard />
+  <p id="message" role="status" aria-live="polite"></p>
+  <noscript>请启用 JavaScript 来登录和读取笔记。</noscript>
+  <script>
+    import '../scripts/app.js';
+  </script>
+</SiteLayout>

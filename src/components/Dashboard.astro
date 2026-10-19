@@ -1,0 +1,11 @@
+---
+import AccessPanel from './AccessPanel.astro';
+import AccountApproval from './AccountApproval.astro';
+import NotesWorkspace from './NotesWorkspace.astro';
+---
+<section id="dashboard" hidden>
+<div class="workspace-header"><div><p class="eyebrow">YOUR PERSONAL SPACE</p><h1>我的笔记<span class="accent">.</span></h1><p id="welcome" class="muted"></p></div><button id="logoutBtn" class="secondary compact">退出登录</button></div>
+  <AccessPanel />
+  <AccountApproval />
+  <NotesWorkspace />
+</section>

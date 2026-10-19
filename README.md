@@ -1,12 +1,25 @@
 # 留白 · Private notes
 
-A responsive Chinese-language GitHub Pages frontend using Supabase email/password authentication, account approval, and a real Postgres backend. Approved users can create, read, edit, and delete their own notes.
+A responsive Chinese-language Astro static site using Supabase email/password authentication, account approval, and a real Postgres backend. Approved users can create, read, edit, and delete their own notes.
+
+## Development and build
+
+Requires Node.js 22.22+ (CI uses Node 24) and pnpm 11.25.0.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm build
+pnpm preview
+```
+
+Astro generates the public HTML and optimized assets in `dist/`. The root page lives in `src/pages/index.astro`, with reusable UI in `src/components/` and the shared layout in `src/layouts/SiteLayout.astro`. Global CSS is bundled from `src/styles/global.css`. Supabase interactions run in the browser from `src/scripts/app.js`; the pinned Supabase SDK is bundled from the package lockfile, with no runtime CDN dependency. Private user data is never fetched at build time.
 
 ## Backend
 
 Connected project: `github-pages` (`meqykrquanvoapjphtun`). The `private_notes` table and four row-level security policies are already deployed. `supabase/schema.sql` documents the schema for a fresh project; do not rerun it on this configured project.
 
-Only the publishable key belongs in `config.js`. Never put a Supabase secret/service-role key in browser code or GitHub. Anonymous database access is revoked. Every note operation requires a verified, approved user whose ID matches the note owner. Signing up does not grant access to notes.
+Only the publishable key belongs in `src/lib/supabase-config.js`. Never put a Supabase secret/service-role key in browser code or GitHub. Anonymous database access is revoked. Every note operation requires a verified, approved user whose ID matches the note owner. Signing up does not grant access to notes.
 
 ## Roles and account approval
 
@@ -24,7 +37,7 @@ The GitHub Pages HTML, CSS, and JavaScript remain public. Private content must s
 ## Deploy
 
 1. In GitHub repository **Settings → Pages → Build and deployment**, choose **GitHub Actions** as the source.
-2. The included workflow publishes only `index.html`, `style.css`, `app.js`, and `config.js` after a push to `main`, or when run manually in Actions.
+2. After a push to `main` (or a manual run), the included workflow uses the official Astro action to install locked dependencies, run `pnpm build`, and upload the generated `dist/` folder to GitHub Pages. Source files and SQL scripts are not deployed.
 3. Live project URL: `https://mingye1li.github.io/`. The first successful deployment is GitHub Actions run `39251187126`.
 4. Supabase **Authentication → URL Configuration** is configured with the live project URL as both the Site URL and an allowed redirect URL, using the root `/` path.
 5. Keep Email authentication and email confirmation enabled. For public signups, configure custom SMTP: Supabase's built-in email service is limited to project-team email addresses and is unsuitable for general registration.
@@ -35,7 +48,7 @@ This app accepts account applications and stores notes separately for each appro
 
 ## Verify
 
-Serve this folder over HTTP (for example `python -m http.server 4174`); ES modules do not work by directly opening `index.html` as a file.
+Use `pnpm dev` during development. To verify the actual deployment output, run `pnpm build` followed by `pnpm preview`. Do not serve the source directory as a static site.
 
 Run `supabase/tests/private_notes.sql` and `supabase/tests/approval.sql` through the SQL editor or database tooling. They create temporary users and records inside transactions and roll everything back. Tests cover owner CRUD, cross-user isolation, pending and rejected denial, signup defaults, metadata forgery, admin-only review, privilege escalation, administrator protection, and immediate revocation. Both suites passed against the connected project.
 

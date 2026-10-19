@@ -1,4 +1,5 @@
-import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
+import { createClient } from '@supabase/supabase-js';
+import { SUPABASE_URL, SUPABASE_KEY } from '../lib/supabase-config.js';
 const $ = (id) => document.getElementById(id);
 let client, userId = null, revision = 0, editingId = null, authBusy = false;
 let access = null, accessRevision = 0, accountsRevision = 0;
@@ -215,13 +216,15 @@ $('logoutBtn').addEventListener('click', async () => {
   } catch (error) { message(error.message, true); }
   finally { $('logoutBtn').disabled = false; }
 });
-try {
-  $('loginBtn').disabled = $('signupBtn').disabled = true;
-  const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/+esm');
-  client = createClient(SUPABASE_URL, SUPABASE_KEY);
-  client.auth.onAuthStateChange((_event, session) => renderSession(session));
-  const { data, error } = await client.auth.getSession();
-  if (error) throw error;
-  renderSession(data.session);
-  $('loginBtn').disabled = $('signupBtn').disabled = false;
-} catch (error) { message(`无法连接登录服务，请刷新重试。${error.message}`, true); }
+async function initialize() {
+  try {
+    $('loginBtn').disabled = $('signupBtn').disabled = true;
+    client = createClient(SUPABASE_URL, SUPABASE_KEY);
+    client.auth.onAuthStateChange((_event, session) => renderSession(session));
+    const { data, error } = await client.auth.getSession();
+    if (error) throw error;
+    renderSession(data.session);
+    $('loginBtn').disabled = $('signupBtn').disabled = false;
+  } catch (error) { message(`无法连接登录服务，请刷新重试。${error.message}`, true); }
+}
+initialize();

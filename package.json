@@ -1,0 +1,17 @@
+{
+  "name": "mingye-private-notes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "engines": { "node": ">=22.22.0" },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.102.0",
+    "astro": "7.4.0"
+  }
+}

@@ -1,0 +1,18 @@
+---
+import '../styles/global.css';
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="登录你的私人笔记空间。" />
+    <meta name="generator" content={Astro.generator} />
+    <title>留白 · 私人笔记</title>
+  </head>
+  <body>
+    <header><a class="brand" href="./"><span class="mark">留</span> 留白 <span class="brand-sub">PERSONAL SPACE</span></a><span class="header-note">给想法，留一点空间。</span></header>
+    <main><slot /></main>
+    <footer><span>留白 / A SPACE OF YOUR OWN</span><span>慢慢记录，好好生活。</span></footer>
+  </body>
+</html>
