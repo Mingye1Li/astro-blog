@@ -1,6 +1,12 @@
-# Liubai blog — Cloudflare Workers + Supabase
+# Astro Blog — Liubai
 
 Astro renders the public blog on request. Cloudflare Workers Free hosts the site; Supabase continues to provide authentication, approval roles, and post storage. GitHub stores source code and runs validation. Cloudflare Git integration builds and deploys main.
+
+Repository: https://github.com/Mingye1Li/astro-blog
+Local project: E:/git_repo/astro-blog
+Live blog: https://liubai-blog.mingye-li1.workers.dev/blog/
+
+The separate E:/git_repo/github-home directory and Mingye1Li/mingye1li.github.io repository are reserved for a future GitHub Pages site.
 
 ## Development and deployment
 
