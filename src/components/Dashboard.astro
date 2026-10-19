@@ -11,10 +11,6 @@ const { page = 'home' } = Astro.props;
     <Text as="button" id="logoutBtn" class="secondary compact" k="auth.logout" />
   </div>
   <AccessPanel />
-  <nav id="workspaceNav" class="workspace-nav" data-i18n-aria-label="navigation.label" aria-label="工作区" hidden>
-    <Text as="a" id="notesLink" href="/notes/" aria-current={page === 'notes' ? 'page' : undefined} k="navigation.notes" />
-    <Text as="a" id="adminLink" href="/admin/" aria-current={page === 'admin' ? 'page' : undefined} hidden k="navigation.admin" />
-  </nav>
   {page === 'admin' && <AccountApproval />}
   {page === 'notes' && <NotesWorkspace />}
 </section>

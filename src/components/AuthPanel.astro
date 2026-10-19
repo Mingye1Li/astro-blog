@@ -2,7 +2,7 @@
 import Text from './Text.astro';
 import { fallback as t } from '../i18n/resources.js';
 ---
-<section id="auth" class="auth-layout">
+<section id="auth" class="auth-layout" hidden={Astro.props.hidden}>
   <div class="intro">
     <Text as="p" class="eyebrow" k="intro.eyebrow" />
     <h1><Text k="intro.titleFirst" /><br /><Text k="intro.titleSecond" /></h1>

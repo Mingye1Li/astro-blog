@@ -4,6 +4,7 @@ import { t, preferencesReady, localizedText, localizedAttribute, dateText } from
 import './theme.js';
 import { renderMarkdown, MAX_NOTE_LENGTH } from '../lib/markdown.js';
 import { ensureMarkdownEditor, markdownValue, setMarkdownValue } from './markdown-editor.js';
+import { loginPath, destinationAfterLogin } from '../lib/navigation.js';
 const $ = (id) => document.getElementById(id);
 let client, userId = null, revision = 0, editingId = null, authBusy = false;
 let access = null, accessRevision = 0, accountsRevision = 0;
@@ -59,7 +60,7 @@ function renderSession(session) {
   const nextId = session?.user?.id ?? null;
   const changed = nextId !== userId;
   userId = nextId;
-  $('auth').hidden = Boolean(userId);
+  $('auth').hidden = Boolean(userId) || page !== 'home';
   $('dashboard').hidden = !userId;
   $('welcome').textContent = session?.user?.email ?? '';
   if (changed || !userId) {
@@ -77,6 +78,9 @@ function renderSession(session) {
     }
   }
   // Database calls must run outside the synchronous auth callback.
+  if (!userId && location.pathname !== '/login/' && location.pathname !== '/login') {
+    location.replace(loginPath(location)); return;
+  }
   if (userId) setTimeout(loadAccess, 0);
 }
 function hidePrivateContent() {
@@ -104,7 +108,10 @@ async function loadAccess() {
       localizedText($('accessTitle'), rejected ? 'access.rejectedTitle' : 'access.pendingTitle');
       localizedText($('accessDescription'), rejected ? 'access.rejectedDescription' : 'access.pendingDescription');
     } else {
-      if (page === 'home' || (page === 'admin' && access.role !== 'admin')) {
+      if (page === 'home') {
+        location.replace(destinationAfterLogin(location.search, location.origin, access.role)); return;
+      }
+      if (page === 'admin' && access.role !== 'admin') {
         location.replace('/notes/'); return;
       }
       if (page === 'admin') { await loadAccounts(); return; }

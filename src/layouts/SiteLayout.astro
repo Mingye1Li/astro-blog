@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import Preferences from '../components/Preferences.astro';
 import { fallback as t } from '../i18n/resources.js';
+import Text from '../components/Text.astro';
+const { page = 'home' } = Astro.props;
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -23,6 +25,10 @@ import { fallback as t } from '../i18n/resources.js';
   <body>
     <header>
       <a class="brand" href="/"><span class="mark" aria-hidden="true">留</span><span data-i18n="brand.name">{t('brand.name')}</span><span class="brand-sub" data-i18n="brand.sub">{t('brand.sub')}</span></a>
+      <nav id="workspaceNav" class="workspace-nav" data-i18n-aria-label="navigation.label" aria-label={t('navigation.label')} hidden>
+        <Text as="a" id="notesLink" href="/notes/" aria-current={page === 'notes' ? 'page' : undefined} k="navigation.notes" />
+        <Text as="a" id="adminLink" href="/admin/" aria-current={page === 'admin' ? 'page' : undefined} hidden k="navigation.admin" />
+      </nav>
       <Preferences />
     </header>
     <main><slot /></main>

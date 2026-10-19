@@ -36,3 +36,17 @@ select:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
 html[lang="en"] h1{letter-spacing:-1.5px}header{gap:24px}.brand{flex-shrink:0}
 @media(max-width:650px){header{flex-wrap:wrap;gap:20px}.preferences{gap:12px;margin-left:auto}.preference{flex-direction:column;align-items:flex-start;gap:5px;font-size:10px}.preference select{font-size:12px;max-width:135px;padding:8px 20px 8px 8px}html[lang="en"] .intro h1{font-size:32px;letter-spacing:-1px}.intro br{display:block}}
 @media(prefers-reduced-motion:no-preference){body,.auth-card,.editor-card,.admin-panel,.note,input,textarea,select{transition:background-color .15s,color .15s,border-color .15s}}
+
+/* Shared navigation and accessible icon-only preference selectors. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+header{gap:20px}.workspace-nav{display:flex;align-items:center;gap:6px;margin-left:auto}
+.workspace-nav a{padding:10px 16px;border:1px solid transparent;border-radius:8px;color:var(--muted);font-size:13px;font-weight:600}
+.workspace-nav a:hover,.workspace-nav [aria-current="page"]{color:var(--green);background:var(--surface-soft)}
+.workspace-nav [aria-current="page"]{border-color:var(--border)}
+.preferences{gap:8px;margin-left:auto}.workspace-nav:not([hidden])+.preferences{margin-left:0}
+.preference{position:relative;display:grid;place-items:center;width:40px;height:40px;margin:0;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--surface);flex-shrink:0}
+.preference svg{width:21px;height:21px;pointer-events:none}
+.preference select{position:absolute;inset:0;opacity:0;width:100%;height:100%;max-width:none;padding:0;cursor:pointer}
+.preference:hover{background:var(--surface-soft)}.preference:focus-within{outline:2px solid var(--focus);outline-offset:3px}
+@media(max-width:650px){header{gap:10px;flex-wrap:wrap}.workspace-nav{gap:2px}.workspace-nav a{padding:10px}.brand-sub{display:none}}
+@media(max-width:420px){header{padding:18px 16px}.brand{gap:8px;letter-spacing:0}.workspace-nav{order:3;width:100%;margin:0}.workspace-nav:not([hidden])+.preferences{margin-left:auto}}

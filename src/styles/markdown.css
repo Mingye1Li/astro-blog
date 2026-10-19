@@ -1,10 +1,6 @@
 #noteWorkspace { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
 #noteWorkspace > * { min-width: 0; }
 .note { background: var(--surface); }
-.workspace-nav { display: flex; gap: 6px; border-bottom: 1px solid var(--border); margin: 0 0 28px; padding-bottom: 10px; }
-.workspace-nav a { padding: 10px 20px; border: 1px solid transparent; border-radius: 8px; color: var(--muted); background: transparent; font-weight: 600; }
-.workspace-nav a:hover { color: var(--text); background: var(--surface-soft); }
-.workspace-nav [aria-current="page"] { color: var(--green); background: var(--surface-soft); border-color: var(--border); }
 .markdown-help, .markdown-length { color: var(--muted); font-size: 11px; line-height: 1.7; }
 .markdown-help { margin: 0 0 12px; }
 .markdown-length { text-align: right; margin: 8px 0 0; }
