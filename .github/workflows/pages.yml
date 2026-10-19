@@ -23,6 +23,7 @@ jobs:
         with:
           node-version: 24
           package-manager: pnpm@11.25.0
+          build-cmd: pnpm test && pnpm build
         env:
           ASTRO_TELEMETRY_DISABLED: '1'
       - uses: actions/deploy-pages@v5

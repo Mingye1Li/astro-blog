@@ -1,4 +1,33 @@
+---
+import Text from './Text.astro';
+import { fallback as t } from '../i18n/resources.js';
+---
 <section id="auth" class="auth-layout">
-<div class="intro"><p class="eyebrow">A LITTLE ROOM FOR YOUR THOUGHTS</p><h1>把重要的事，<br>留在这里。</h1><p class="lead">灵感、计划，或是一段不想忘记的话。<br>登录后，回到只属于你的笔记空间。</p><div class="illustration" aria-hidden="true"><div class="paper paper-back"></div><div class="paper paper-front"><span class="paper-date">A NOTE TO SELF</span><span class="paper-line long"></span><span class="paper-line"></span><span class="paper-line short"></span><span class="paper-flower">✳</span></div></div><p class="intro-foot">你的笔记 · 你的节奏</p></div>
-<div class="auth-card"><span class="pill">你的私人空间</span><h2>欢迎回来</h2><p class="muted">登录，继续记录你的日常。</p><form id="loginForm"><label for="email">邮箱地址</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com" required maxlength="254"><label for="password">密码</label><input id="password" type="password" autocomplete="current-password" placeholder="请输入密码" required><button id="loginBtn" class="primary" type="submit">登录 ↗</button><button id="signupBtn" class="secondary" type="button">申请账号</button></form><p class="fine-print">新账号验证邮箱后，需管理员批准才能使用。<br>笔记仅对所属账号可见。</p></div>
+  <div class="intro">
+    <Text as="p" class="eyebrow" k="intro.eyebrow" />
+    <h1><Text k="intro.titleFirst" /><br /><Text k="intro.titleSecond" /></h1>
+    <p class="lead"><Text k="intro.leadFirst" /><br /><Text k="intro.leadSecond" /></p>
+    <div class="illustration" aria-hidden="true">
+      <div class="paper paper-back"></div>
+      <div class="paper paper-front">
+        <Text class="paper-date" k="intro.paper" />
+        <span class="paper-line long"></span><span class="paper-line"></span><span class="paper-line short"></span><span class="paper-flower">✳</span>
+      </div>
+    </div>
+    <Text as="p" class="intro-foot" k="intro.foot" />
+  </div>
+  <div class="auth-card">
+    <Text class="pill" k="auth.badge" />
+    <Text as="h2" k="auth.title" />
+    <Text as="p" class="muted" k="auth.description" />
+    <form id="loginForm">
+      <Text as="label" for="email" k="auth.email" />
+      <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required maxlength="254" />
+      <Text as="label" for="password" k="auth.password" />
+      <input id="password" type="password" autocomplete="current-password" data-i18n-placeholder="auth.passwordPlaceholder" placeholder={t('auth.passwordPlaceholder')} required />
+      <Text as="button" id="loginBtn" class="primary" type="submit" k="auth.login" />
+      <Text as="button" id="signupBtn" class="secondary" type="button" k="auth.signup" />
+    </form>
+    <p class="fine-print"><Text k="auth.fineFirst" /><br /><Text k="auth.fineSecond" /></p>
+  </div>
 </section>

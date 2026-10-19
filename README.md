@@ -9,11 +9,20 @@ Requires Node.js 22.22+ (CI uses Node 24) and pnpm 11.25.0.
 ```sh
 pnpm install --frozen-lockfile
 pnpm dev
+pnpm test
 pnpm build
 pnpm preview
 ```
 
 Astro generates the public HTML and optimized assets in `dist/`. The root page lives in `src/pages/index.astro`, with reusable UI in `src/components/` and the shared layout in `src/layouts/SiteLayout.astro`. Global CSS is bundled from `src/styles/global.css`. Supabase interactions run in the browser from `src/scripts/app.js`; the pinned Supabase SDK is bundled from the package lockfile, with no runtime CDN dependency. Private user data is never fetched at build time.
+
+## Language and appearance
+
+The header provides English / Simplified Chinese and System / Light / Dark selectors. i18next and i18next-browser-languagedetector detect the browser language, fall back to Simplified Chinese, and remember the choice in `liubai-language`. Translation resources live in `src/i18n/resources.js`. Static Astro copy and dynamic approval states, messages, action labels, and dates update in place without reloading or clearing a note draft. User-written notes and account emails are never translated.
+
+theme-change persists explicit theme choices in `liubai-theme`; System clears that override and follows `prefers-color-scheme`. A small inline head script restores an explicit theme before paint. Both themes use shared CSS tokens, and explicit language/theme changes synchronize across tabs. If browser storage is blocked, theme changes work for the current page without persistence.
+
+`pnpm test` checks translation coverage, English pluralization, and interpolation. GitHub Actions runs the tests before building.
 
 ## Backend
 

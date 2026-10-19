@@ -1,1 +1,9 @@
-<section id="accessPanel" class="editor-card" role="status"><span id="accessBadge" class="pill">正在检查权限</span><h2 id="accessTitle">正在确认账号状态</h2><p id="accessDescription" class="muted">请稍候……</p><button id="checkAccessBtn" class="secondary compact" type="button">刷新审批状态</button></section>
+---
+import Text from './Text.astro';
+---
+<section id="accessPanel" class="editor-card" role="status">
+  <Text id="accessBadge" class="pill" k="access.checkingBadge" />
+  <Text as="h2" id="accessTitle" k="access.checkingTitle" />
+  <Text as="p" id="accessDescription" class="muted" k="access.checkingDescription" />
+  <Text as="button" id="checkAccessBtn" class="secondary compact" type="button" k="access.refresh" />
+</section>

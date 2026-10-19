@@ -1,1 +1,25 @@
-<div id="noteWorkspace" class="workspace-grid" hidden><section class="editor-card"><p class="eyebrow">CAPTURE A THOUGHT</p><h2 id="editorTitle">写一条新笔记</h2><form id="noteForm"><label for="noteTitle">标题</label><input id="noteTitle" placeholder="给这个想法起个名字" required maxlength="120"><label for="noteBody">正文</label><textarea id="noteBody" rows="9" placeholder="从这里开始……" maxlength="20000"></textarea><div class="actions"><button id="saveBtn" class="primary" type="submit">保存笔记</button><button id="cancelBtn" class="secondary" type="button" hidden>取消编辑</button></div></form></section><section aria-labelledby="notesTitle"><div class="list-heading"><h2 id="notesTitle">已收藏的想法</h2><button id="refreshBtn" class="text-button" type="button">刷新</button></div><p id="notesState" class="empty-state">正在加载笔记……</p><div id="notes"></div></section></div>
+---
+import Text from './Text.astro';
+import { fallback as t } from '../i18n/resources.js';
+---
+<div id="noteWorkspace" class="workspace-grid" hidden>
+  <section class="editor-card">
+    <Text as="p" class="eyebrow" k="workspace.capture" />
+    <Text as="h2" id="editorTitle" k="workspace.newNote" />
+    <form id="noteForm">
+      <Text as="label" for="noteTitle" k="workspace.titleLabel" />
+      <input id="noteTitle" data-i18n-placeholder="workspace.titlePlaceholder" placeholder={t('workspace.titlePlaceholder')} required maxlength="120" />
+      <Text as="label" for="noteBody" k="workspace.bodyLabel" />
+      <textarea id="noteBody" rows="9" data-i18n-placeholder="workspace.bodyPlaceholder" placeholder={t('workspace.bodyPlaceholder')} maxlength="20000"></textarea>
+      <div class="actions">
+        <Text as="button" id="saveBtn" class="primary" type="submit" k="workspace.save" />
+        <Text as="button" id="cancelBtn" class="secondary" type="button" hidden k="workspace.cancel" />
+      </div>
+    </form>
+  </section>
+  <section aria-labelledby="notesTitle">
+    <div class="list-heading"><Text as="h2" id="notesTitle" k="workspace.notes" /><Text as="button" id="refreshBtn" class="text-button" type="button" k="workspace.refresh" /></div>
+    <Text as="p" id="notesState" class="empty-state" k="workspace.loading" />
+    <div id="notes"></div>
+  </section>
+</div>

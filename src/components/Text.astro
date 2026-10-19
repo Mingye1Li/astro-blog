@@ -1,0 +1,5 @@
+---
+import { fallback } from '../i18n/resources.js';
+const { k, as: Tag = 'span', ...attributes } = Astro.props;
+---
+<Tag {...attributes} data-i18n={k}>{fallback(k)}</Tag>
