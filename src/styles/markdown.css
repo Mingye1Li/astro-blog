@@ -1,6 +1,10 @@
 #noteWorkspace { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
 #noteWorkspace > * { min-width: 0; }
 .note { background: var(--surface); }
+.workspace-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border); margin: 0 0 28px; padding-bottom: 10px; }
+.workspace-tabs [role="tab"] { padding: 10px 20px; border: 1px solid transparent; border-radius: 8px; color: var(--muted); background: transparent; font-weight: 600; }
+.workspace-tabs [role="tab"]:hover { color: var(--text); background: var(--surface-soft); }
+.workspace-tabs [aria-selected="true"] { color: var(--green); background: var(--surface-soft); border-color: var(--border); }
 .markdown-help, .markdown-length { color: var(--muted); font-size: 11px; line-height: 1.7; }
 .markdown-help { margin: 0 0 12px; }
 .markdown-length { text-align: right; margin: 8px 0 0; }
@@ -66,4 +70,3 @@
 .markdown-body hr { border: 0; border-top: 1px solid var(--border); margin: 1.4em 0; }
 .markdown-body img { max-width: 100%; height: auto; border-radius: 6px; }
 @media (max-width: 850px) { #noteWorkspace { grid-template-columns: minmax(0, 1fr); } }
-

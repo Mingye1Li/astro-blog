@@ -1,7 +1,7 @@
 ---
 import Text from './Text.astro';
 ---
-<section id="adminPanel" class="admin-panel" hidden aria-labelledby="adminTitle">
+<section id="adminPanel" class="admin-panel" hidden role="tabpanel" aria-labelledby="adminTab" tabindex="0">
   <div class="list-heading">
     <div><Text as="p" class="eyebrow" k="admin.eyebrow" /><Text as="h2" id="adminTitle" k="admin.title" /></div>
     <Text as="button" id="refreshAccountsBtn" class="secondary compact" type="button" k="admin.refresh" />

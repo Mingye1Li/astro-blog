@@ -2,7 +2,7 @@
 import Text from './Text.astro';
 import { fallback as t } from '../i18n/resources.js';
 ---
-<div id="noteWorkspace" class="workspace-grid" hidden>
+<div id="noteWorkspace" class="workspace-grid" hidden role="tabpanel" aria-labelledby="notesTab" tabindex="0">
   <section class="editor-card">
     <Text as="p" class="eyebrow" k="workspace.capture" />
     <Text as="h2" id="editorTitle" k="workspace.newNote" />

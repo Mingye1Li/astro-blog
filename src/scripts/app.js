@@ -7,6 +7,34 @@ import { ensureMarkdownEditor, markdownValue, setMarkdownValue } from './markdow
 const $ = (id) => document.getElementById(id);
 let client, userId = null, revision = 0, editingId = null, authBusy = false;
 let access = null, accessRevision = 0, accountsRevision = 0;
+let activeTab = 'notes';
+function renderWorkspaceTabs(nextTab = activeTab) {
+  const approved = Boolean(userId && access?.status === 'approved');
+  const isAdmin = approved && access.role === 'admin';
+  activeTab = isAdmin && nextTab === 'admin' ? 'admin' : 'notes';
+  $('workspaceTabs').hidden = !approved;
+  $('adminTab').hidden = !isAdmin;
+  $('noteWorkspace').hidden = !approved || activeTab !== 'notes';
+  $('adminPanel').hidden = !isAdmin || activeTab !== 'admin';
+  for (const name of ['notes', 'admin']) {
+    const selected = name === activeTab;
+    $(name + 'Tab').setAttribute('aria-selected', String(selected));
+    $(name + 'Tab').tabIndex = selected ? 0 : -1;
+  }
+  if (!isAdmin) {
+    accountsRevision++;
+    $('accounts').replaceChildren();
+    $('accountsState').textContent = '';
+  }
+}
+async function selectWorkspaceTab(name) {
+  renderWorkspaceTabs(name);
+  if (!userId || access?.status !== 'approved') return;
+  if (activeTab === 'admin') await loadAccounts();
+  else {
+    try { await ensureMarkdownEditor(); } catch (error) { showError(error); }
+  }
+}
 function message(key, error = false, options = {}) {
   localizedText($('message'), key, options);
   $('message').classList.toggle('error', error);
@@ -43,7 +71,7 @@ function renderSession(session) {
   $('welcome').textContent = session?.user?.email ?? '';
   if (changed || !userId) {
     access = null; accessRevision++; accountsRevision++;
-    $('noteWorkspace').hidden = $('adminPanel').hidden = true;
+    renderWorkspaceTabs('notes');
     $('accounts').replaceChildren();
     $('accessPanel').hidden = false;
     revision++;
@@ -59,7 +87,7 @@ function renderSession(session) {
 function hidePrivateContent() {
   revision++; accountsRevision++;
   $('notes').replaceChildren(); $('accounts').replaceChildren();
-  $('noteWorkspace').hidden = $('adminPanel').hidden = true;
+  renderWorkspaceTabs('notes');
   resetEditor();
 }
 async function loadAccess() {
@@ -73,8 +101,7 @@ async function loadAccess() {
     access = data?.[0] ?? null;
     const approved = access?.status === 'approved';
     $('accessPanel').hidden = approved;
-    $('noteWorkspace').hidden = !approved;
-    $('adminPanel').hidden = !(approved && access.role === 'admin');
+    renderWorkspaceTabs();
     if (!approved) {
       hidePrivateContent();
       const rejected = access?.status === 'rejected';
@@ -85,7 +112,7 @@ async function loadAccess() {
       await ensureMarkdownEditor();
       if (owner !== userId || request !== accessRevision) return;
       await loadNotes();
-      if (access?.role === 'admin' && owner === userId && request === accessRevision) await loadAccounts();
+      if (activeTab === 'admin' && access?.role === 'admin' && owner === userId && request === accessRevision) await loadAccounts();
     }
   } catch (error) {
     if (owner !== userId || request !== accessRevision) return;
@@ -214,6 +241,18 @@ $('cancelBtn').addEventListener('click', resetEditor);
 $('refreshBtn').addEventListener('click', loadAccess);
 $('checkAccessBtn').addEventListener('click', loadAccess);
 $('refreshAccountsBtn').addEventListener('click', loadAccounts);
+for (const name of ['notes', 'admin']) {
+  const tab = $(name + 'Tab');
+  tab.addEventListener('click', () => selectWorkspaceTab(name));
+  tab.addEventListener('keydown', (event) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const names = $('adminTab').hidden ? ['notes'] : ['notes', 'admin'];
+    const next = event.key === 'Home' ? names[0] : event.key === 'End' ? names.at(-1) : names[(names.indexOf(name) + 1) % names.length];
+    selectWorkspaceTab(next);
+    $(next + 'Tab').focus();
+  });
+}
 window.addEventListener('focus', () => { if (userId) loadAccess(); });
 setInterval(() => { if (userId && !document.hidden) loadAccess(); }, 30000);
 $('noteForm').addEventListener('submit', async (event) => {

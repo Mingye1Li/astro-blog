@@ -10,6 +10,10 @@ import NotesWorkspace from './NotesWorkspace.astro';
     <Text as="button" id="logoutBtn" class="secondary compact" k="auth.logout" />
   </div>
   <AccessPanel />
+  <div id="workspaceTabs" class="workspace-tabs" role="tablist" data-i18n-aria-label="navigation.label" aria-label="工作区" hidden>
+    <Text as="button" id="notesTab" type="button" role="tab" aria-selected="true" aria-controls="noteWorkspace" k="navigation.notes" />
+    <Text as="button" id="adminTab" type="button" role="tab" aria-selected="false" aria-controls="adminPanel" tabindex="-1" hidden k="navigation.admin" />
+  </div>
   <AccountApproval />
   <NotesWorkspace />
 </section>
