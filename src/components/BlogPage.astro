@@ -1,0 +1,16 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Text from './Text.astro';
+---
+<SiteLayout page="blog">
+  <section class="blog-intro">
+    <Text as="p" class="eyebrow" k="blog.eyebrow" />
+    <Text as="h1" k="blog.title" />
+    <Text as="p" class="lead" k="blog.description" />
+  </section>
+  <p id="blogState" class="empty-state" role="status" data-i18n="blog.loading">正在加载文章……</p>
+  <div id="blogPosts" class="blog-posts"></div>
+  <Text as="button" id="blogMore" class="secondary compact" type="button" hidden k="blog.more" />
+  <noscript>Enable JavaScript to read published posts. / 请启用 JavaScript 阅读公开文章。</noscript>
+  <script>import '../scripts/blog.js';</script>
+</SiteLayout>

@@ -4,7 +4,7 @@ export function safeReturnPath(value, origin) {
     const url = new URL(value || '/notes/', origin);
     if (url.origin !== origin || url.username || url.password) return '/notes/';
     const path = url.pathname.replace(/\/$/, '');
-    if (!['/notes', '/admin'].includes(path)) return '/notes/';
+    if (!['/notes', '/admin', '/blog'].includes(path)) return '/notes/';
     return `${path}/${url.search}${url.hash}`;
   } catch { return '/notes/'; }
 }

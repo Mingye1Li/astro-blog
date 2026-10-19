@@ -25,11 +25,13 @@ const { page = 'home' } = Astro.props;
   <body>
     <header>
       <a class="brand" href="/"><span class="mark" aria-hidden="true">留</span><span data-i18n="brand.name">{t('brand.name')}</span><span class="brand-sub" data-i18n="brand.sub">{t('brand.sub')}</span></a>
-      <nav id="workspaceNav" class="workspace-nav" data-i18n-aria-label="navigation.label" aria-label={t('navigation.label')} hidden>
-        <Text as="a" id="notesLink" href="/notes/" aria-current={page === 'notes' ? 'page' : undefined} k="navigation.notes" />
+      <nav id="workspaceNav" class="workspace-nav" data-i18n-aria-label="navigation.label" aria-label={t('navigation.label')}>
+        <Text as="a" href="/blog/" aria-current={page === 'blog' ? 'page' : undefined} k="blog.nav" />
+        <Text as="a" id="notesLink" href="/notes/" aria-current={page === 'notes' ? 'page' : undefined} hidden k="navigation.notes" />
         <Text as="a" id="adminLink" href="/admin/" aria-current={page === 'admin' ? 'page' : undefined} hidden k="navigation.admin" />
       </nav>
       <Preferences />
+      {page === 'blog' && <Text as="a" id="blogLogin" href="/login/?next=%2Fblog%2F" class="text-button" k="blog.login" />}
     </header>
     <main><slot /></main>
     <footer><span data-i18n="footer.brand">{t('footer.brand')}</span><span data-i18n="footer.note">{t('footer.note')}</span></footer>

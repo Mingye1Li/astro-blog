@@ -13,6 +13,12 @@ import { fallback as t } from '../i18n/resources.js';
       <Text as="p" id="markdownHelp" class="markdown-help" k="markdown.help" />
       <textarea id="noteBody" rows="9" data-i18n-placeholder="workspace.bodyPlaceholder" placeholder={t('workspace.bodyPlaceholder')} maxlength="20000"></textarea>
       <p id="noteLength" class="markdown-length"></p>
+      <Text as="label" for="postVisibility" k="blog.visibility" />
+      <select id="postVisibility" aria-describedby="visibilityHelp">
+        <option value="private" data-i18n="blog.private">{t('blog.private')}</option>
+        <option value="published" data-i18n="blog.published">{t('blog.published')}</option>
+      </select>
+      <Text as="p" id="visibilityHelp" class="muted" k="blog.visibilityHelp" />
       <div class="actions">
         <Text as="button" id="saveBtn" class="primary" type="submit" k="workspace.save" />
         <Text as="button" id="cancelBtn" class="secondary" type="button" hidden k="workspace.cancel" />

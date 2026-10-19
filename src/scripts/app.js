@@ -13,14 +13,14 @@ let editorBaseline = '';
 function renderWorkspace() {
   const approved = Boolean(userId && access?.status === 'approved');
   const isAdmin = approved && access.role === 'admin';
-  $('workspaceNav').hidden = !approved;
+  $('notesLink').hidden = !approved;
   $('adminLink').hidden = !isAdmin;
   if ($('noteWorkspace')) $('noteWorkspace').hidden = !approved;
   if ($('adminPanel')) $('adminPanel').hidden = !isAdmin;
   if (!isAdmin) { accountsRevision++; $('accounts')?.replaceChildren(); }
 }
 function draftSnapshot() {
-  return $('noteForm') ? JSON.stringify([$('noteTitle').value, markdownValue()]) : '';
+  return $('noteForm') ? JSON.stringify([$('noteTitle').value, markdownValue(), $('postVisibility').value]) : '';
 }
 window.addEventListener('beforeunload', (event) => {
   if (userId && $('noteForm') && draftSnapshot() !== editorBaseline) {
@@ -178,6 +178,7 @@ function accountElement(account) {
 function noteElement(note) {
   const article = document.createElement('article'); article.className = 'note';
   const title = document.createElement('h3'); title.textContent = note.title;
+  const visibility = document.createElement('p'); visibility.className = 'pill'; localizedText(visibility, note.is_published ? 'blog.published' : 'blog.private');
   const body = document.createElement('div'); body.className = 'note-body markdown-body'; body.innerHTML = renderMarkdown(note.body);
   const meta = document.createElement('div'); meta.className = 'note-meta';
   const time = document.createElement('time'); time.dateTime = note.created_at;
@@ -187,7 +188,7 @@ function noteElement(note) {
   const edit = document.createElement('button'); edit.type = 'button'; localizedText(edit, 'workspace.edit');
   localizedAttribute(edit, 'aria-label', 'workspace.editLabel', { title: note.title });
   edit.addEventListener('click', () => {
-    editingId = note.id; $('noteTitle').value = note.title; setMarkdownValue(note.body);
+    editingId = note.id; $('noteTitle').value = note.title; setMarkdownValue(note.body); $('postVisibility').value = note.is_published ? 'published' : 'private';
     localizedText($('editorTitle'), 'workspace.editNote'); $('cancelBtn').hidden = false; $('noteTitle').focus();
     editorBaseline = draftSnapshot();
   });
@@ -206,14 +207,14 @@ function noteElement(note) {
     } catch (error) { if (owner === userId) showError(error); }
     finally { remove.disabled = false; }
   });
-  actions.append(edit, remove); meta.append(time, actions); article.append(title, body, meta); return article;
+  actions.append(edit, remove); meta.append(time, actions); article.append(title, visibility, body, meta); return article;
 }
 async function loadNotes() {
   if (!userId || access?.status !== 'approved') return;
   const owner = userId, request = ++revision;
   $('refreshBtn').disabled = true;
   try {
-    const { data, error } = await client.from('private_notes').select('id,title,body,created_at').eq('user_id', owner).order('created_at', { ascending: false });
+    const { data, error } = await client.from('private_notes').select('id,title,body,created_at,is_published,published_at').eq('user_id', owner).order('created_at', { ascending: false });
     if (owner !== userId || request !== revision) return;
     if (error) throw error;
     $('notes').replaceChildren(...data.map(noteElement));
@@ -256,7 +257,8 @@ $('noteForm')?.addEventListener('submit', async (event) => {
   if (!title) { message('workspace.titleRequired', true); return; }
   const body = markdownValue();
   if (body.length > MAX_NOTE_LENGTH) { message('markdown.tooLong', true, { total: MAX_NOTE_LENGTH }); return; }
-  const values = { title, body };
+  const values = { title, body, is_published: $('postVisibility').value === 'published' };
+  if (values.is_published && !confirm(t('blog.publishConfirm'))) return;
   $('saveBtn').disabled = $('cancelBtn').disabled = true;
   try {
     const query = editingId

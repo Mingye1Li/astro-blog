@@ -50,3 +50,5 @@ header{gap:20px}.workspace-nav{display:flex;align-items:center;gap:6px;margin-le
 .preference:hover{background:var(--surface-soft)}.preference:focus-within{outline:2px solid var(--focus);outline-offset:3px}
 @media(max-width:650px){header{gap:10px;flex-wrap:wrap}.workspace-nav{gap:2px}.workspace-nav a{padding:10px}.brand-sub{display:none}}
 @media(max-width:420px){header{padding:18px 16px}.brand{gap:8px;letter-spacing:0}.workspace-nav{order:3;width:100%;margin:0}.workspace-nav:not([hidden])+.preferences{margin-left:auto}}
+
+.blog-intro{max-width:760px;margin-bottom:48px}.blog-posts{max-width:800px;margin:auto}.blog-post{padding:32px 0;border-bottom:1px solid var(--border);margin-bottom:24px}.blog-post h2{font-size:28px;overflow-wrap:anywhere;margin:12px 0 24px}.blog-post .markdown-body{font-size:16px;line-height:1.9}.blog-post h2 a:hover{color:var(--green)}#blogMore{margin:32px auto}#postVisibility{max-width:100%;width:100%}#blogLogin{white-space:nowrap}header{flex-wrap:wrap}

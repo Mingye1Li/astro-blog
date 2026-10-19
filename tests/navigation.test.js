@@ -15,6 +15,7 @@ test('return destinations reject external sites, credentials, and login loops', 
     assert.equal(safeReturnPath(value, origin), '/notes/');
   }
   assert.equal(safeReturnPath('/admin', origin), '/admin/');
+  assert.equal(safeReturnPath('/blog/?post=example', origin), '/blog/?post=example');
   assert.equal(destinationAfterLogin('', origin, 'admin'), '/notes/');
 });
 test('non-admin users cannot return to an admin destination after login', () => {

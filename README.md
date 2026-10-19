@@ -70,3 +70,11 @@ Use `pnpm dev` during development. To verify the actual deployment output, run `
 Run `supabase/tests/private_notes.sql` and `supabase/tests/approval.sql` through the SQL editor or database tooling. They create temporary users and records inside transactions and roll everything back. Tests cover owner CRUD, cross-user isolation, pending and rejected denial, signup defaults, metadata forgery, admin-only review, privilege escalation, administrator protection, and immediate revocation. Both suites passed against the connected project.
 
 Browser verification covered rendering, module loading, and login error handling. A real signup/confirmation/login round trip still requires a user-controlled email and configured confirmation redirects. Supabase's security advisor reports that leaked-password protection is disabled; this feature requires a paid Supabase plan.
+# Blog publishing
+
+The home page and `/blog/` are public. Approved users manage their own posts at `/notes/`; `/admin/` remains restricted to administrators. Each post defaults to Private. Choose Published and save to make it available on the blog; choose Private and save to unpublish. Existing notes are kept private.
+
+The blog reads published Markdown from Supabase in pages of 12 and supports share links at `/blog/?post=<id>`. It renders content in the browser, so publishing does not require rebuilding GitHub Pages. Private post content is never included in the static build. Public content can be copied by readers; unpublishing prevents future API reads but cannot recall copies.
+
+Apply `supabase/blog.sql` after the base schema and approval setup on a fresh database. `supabase/tests/blog.sql` verifies publication and privacy with transaction-scoped fixtures and rolls them back.
+
