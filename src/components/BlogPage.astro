@@ -7,11 +7,6 @@ Astro.response.headers.set('Cache-Control', 'no-store');
 const page = Math.min(10000, Math.max(1, Number.parseInt(Astro.url.searchParams.get('page') || '1') || 1));
 let posts = [], failed = false;
 try {
-  const legacy = Astro.url.searchParams.get('post');
-  if (legacy && /^[0-9a-f-]{36}$/i.test(legacy)) {
-    const found = await publicPosts({id: `eq.${legacy}`, limit:'1'});
-    if (found[0]) return Astro.redirect(postPath(found[0].slug), 302);
-  }
   posts = await publicPosts({offset:String((page - 1) * 12), limit:'13'});
 } catch { failed = true; Astro.response.status = 503; }
 ---
