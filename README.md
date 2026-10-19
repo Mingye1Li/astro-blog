@@ -14,11 +14,11 @@ The GitHub Pages HTML, CSS, and JavaScript remain public. Private content must s
 
 1. In GitHub repository **Settings → Pages → Build and deployment**, choose **GitHub Actions** as the source.
 2. The included workflow publishes only `index.html`, `style.css`, `app.js`, and `config.js` after a push to `main`, or when run manually in Actions.
-3. Expected project URL: `https://mingye1li.github.io/github-home/` (confirm the actual URL in the successful deployment).
-4. In Supabase **Authentication → URL Configuration**, set the Site URL and an allowed redirect URL to that exact project URL, including `/github-home/`.
+3. Live project URL: `https://mingye1li.github.io/github-home/`. The first successful deployment is GitHub Actions run `39251187126`.
+4. Supabase **Authentication → URL Configuration** is configured with the live project URL as both the Site URL and an allowed redirect URL, including `/github-home/`.
 5. Keep Email authentication and email confirmation enabled. For public signups, configure custom SMTP: Supabase's built-in email service is limited to project-team email addresses and is unsuitable for general registration.
 
-The repository is currently private. GitHub Pages from a private personal repository requires GitHub Pro; otherwise GitHub requires a public repository. Review that choice before changing repository visibility.
+The source repository is public, as approved, and Pages uses GitHub Actions. Supabase notes remain private to their owners.
 
 This app lets people register and stores notes separately for each user. For an invite-only space, disable new signups in Supabase and create/invite permitted users through the dashboard; existing users can still sign in.
 
