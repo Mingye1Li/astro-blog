@@ -1,6 +1,7 @@
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
 const $ = (id) => document.getElementById(id);
 let client, userId = null, revision = 0, editingId = null, authBusy = false;
+let access = null, accessRevision = 0, accountsRevision = 0;
 function message(text, error = false) {
   $('message').textContent = text;
   $('message').classList.toggle('error', error);
@@ -19,6 +20,10 @@ function renderSession(session) {
   $('dashboard').hidden = !userId;
   $('welcome').textContent = session?.user?.email ?? '';
   if (changed || !userId) {
+    access = null; accessRevision++; accountsRevision++;
+    $('noteWorkspace').hidden = $('adminPanel').hidden = true;
+    $('accounts').replaceChildren();
+    $('accessPanel').hidden = false;
     revision++;
     $('notes').replaceChildren();
     resetEditor();
@@ -27,7 +32,87 @@ function renderSession(session) {
     $('refreshBtn').disabled = false;
   }
   // Database calls must run outside the synchronous auth callback.
-  if (changed && userId) setTimeout(loadNotes, 0);
+  if (userId) setTimeout(loadAccess, 0);
+}
+function hidePrivateContent() {
+  revision++; accountsRevision++;
+  $('notes').replaceChildren(); $('accounts').replaceChildren();
+  $('noteWorkspace').hidden = $('adminPanel').hidden = true;
+  resetEditor();
+}
+async function loadAccess() {
+  if (!userId) return;
+  const owner = userId, request = ++accessRevision;
+  $('checkAccessBtn').disabled = true;
+  try {
+    const { data, error } = await client.rpc('get_my_access');
+    if (owner !== userId || request !== accessRevision) return;
+    if (error) throw error;
+    access = data?.[0] ?? null;
+    const approved = access?.status === 'approved';
+    $('accessPanel').hidden = approved;
+    $('noteWorkspace').hidden = !approved;
+    $('adminPanel').hidden = !(approved && access.role === 'admin');
+    if (!approved) {
+      hidePrivateContent();
+      const rejected = access?.status === 'rejected';
+      $('accessBadge').textContent = rejected ? '未获批准' : '待管理员审批';
+      $('accessTitle').textContent = rejected ? '账号申请未获批准' : '申请已提交，请等待批准';
+      $('accessDescription').textContent = rejected ? '该账号目前无法使用笔记。如需重新审核，请联系网站管理员。' : '管理员批准你的账号后，即可进入私人笔记空间。你可以稍后刷新审批状态。';
+    } else {
+      await loadNotes();
+      if (access?.role === 'admin' && owner === userId && request === accessRevision) await loadAccounts();
+    }
+  } catch (error) {
+    if (owner !== userId || request !== accessRevision) return;
+    access = null; hidePrivateContent(); $('accessPanel').hidden = false;
+    $('accessBadge').textContent = '权限检查失败'; $('accessTitle').textContent = '暂时无法确认账号权限';
+    $('accessDescription').textContent = '请刷新审批状态后重试。'; message(error.message, true);
+  } finally { if (request === accessRevision) $('checkAccessBtn').disabled = false; }
+}
+async function loadAccounts() {
+  if (!userId || access?.role !== 'admin' || access.status !== 'approved') return;
+  const owner = userId, request = ++accountsRevision;
+  $('refreshAccountsBtn').disabled = true;
+  try {
+    const { data, error } = await client.rpc('list_accounts');
+    if (owner !== userId || request !== accountsRevision) return;
+    if (error) throw error;
+    $('accounts').replaceChildren(...data.map(accountElement));
+    $('accountsState').textContent = `${data.filter((a) => a.status === 'pending').length} 个待审批账号 · 共 ${data.length} 个账号`;
+  } catch (error) {
+    if (owner !== userId || request !== accountsRevision) return;
+    $('accounts').replaceChildren(); $('accountsState').textContent = '无法加载账号，请重试。'; message(error.message, true);
+  } finally { if (request === accountsRevision) $('refreshAccountsBtn').disabled = false; }
+}
+function accountElement(account) {
+  const card = document.createElement('article'); card.className = 'account';
+  const info = document.createElement('div');
+  const email = document.createElement('strong'); email.textContent = account.email || '无邮箱账号';
+  const detail = document.createElement('p'); detail.className = 'muted';
+  const labels = { pending: '待审批', approved: '已批准', rejected: '已拒绝' };
+  detail.textContent = `${account.role === 'admin' ? '管理员' : '普通成员'} · ${labels[account.status]} · ${account.email_confirmed ? '邮箱已验证' : '邮箱待验证'}`;
+  info.append(email, detail); card.append(info);
+  if (account.role === 'admin') return card;
+  const actions = document.createElement('div'); actions.className = 'account-actions';
+  for (const [status, label] of [['approved','批准'],['rejected', account.status === 'approved' ? '撤销权限' : '拒绝'],['pending','重新审核']]) {
+    if (account.status === status) continue;
+    const button = document.createElement('button'); button.type = 'button'; button.className = status === 'approved' ? 'primary compact' : 'secondary compact'; button.textContent = label;
+    button.setAttribute('aria-label', `${label}：${account.email || '无邮箱账号'}`);
+    button.addEventListener('click', async () => {
+      const owner = userId;
+      actions.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+      try {
+        const { error } = await client.rpc('review_account', { target_user_id: account.user_id, new_status: status });
+        if (error) throw error;
+        if (owner !== userId) return;
+        message('审批结果已保存。'); await loadAccounts();
+      } catch (error) { if (owner === userId) message(error.message, true); }
+      finally { actions.querySelectorAll('button').forEach((b) => { b.disabled = false; }); }
+    });
+    actions.append(button);
+  }
+  card.append(actions); return card;
 }
 function noteElement(note) {
   const article = document.createElement('article'); article.className = 'note';
@@ -61,7 +146,7 @@ function noteElement(note) {
   actions.append(edit, remove); meta.append(time, actions); article.append(title, body, meta); return article;
 }
 async function loadNotes() {
-  if (!userId) return;
+  if (!userId || access?.status !== 'approved') return;
   const owner = userId, request = ++revision;
   $('refreshBtn').disabled = true;
   try {
@@ -89,17 +174,21 @@ async function authenticate(signup) {
       : await client.auth.signInWithPassword(credentials);
     if (error) throw error;
     $('password').value = '';
-    message(signup && !data.session ? '请查看邮箱，点击验证链接完成注册，然后返回登录。' : '已登录，你的笔记准备好了。');
+    message(signup && !data.session ? '请查看邮箱并完成验证，之后登录查看管理员审批状态。' : '已登录，正在确认审批状态。');
   } catch (error) { message(error.message, true); }
   finally { authBusy = false; $('loginBtn').disabled = $('signupBtn').disabled = false; }
 }
 $('loginForm').addEventListener('submit', (event) => { event.preventDefault(); authenticate(false); });
 $('signupBtn').addEventListener('click', () => authenticate(true));
 $('cancelBtn').addEventListener('click', resetEditor);
-$('refreshBtn').addEventListener('click', loadNotes);
+$('refreshBtn').addEventListener('click', loadAccess);
+$('checkAccessBtn').addEventListener('click', loadAccess);
+$('refreshAccountsBtn').addEventListener('click', loadAccounts);
+window.addEventListener('focus', () => { if (userId) loadAccess(); });
+setInterval(() => { if (userId && !document.hidden) loadAccess(); }, 30000);
 $('noteForm').addEventListener('submit', async (event) => {
   event.preventDefault();
-  if (!userId || $('saveBtn').disabled) return;
+  if (!userId || access?.status !== 'approved' || $('saveBtn').disabled) return;
   const owner = userId, title = $('noteTitle').value.trim();
   if (!title) { message('请输入笔记标题。', true); return; }
   const values = { title, body: $('noteBody').value };

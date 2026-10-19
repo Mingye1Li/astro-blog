@@ -1,5 +1,6 @@
 begin;
-insert into auth.users (id, email) values ('11111111-1111-4111-8111-111111111111','notes-rls-a@example.invalid'),('22222222-2222-4222-8222-222222222222','notes-rls-b@example.invalid');
+insert into auth.users (id, email, email_confirmed_at) values ('11111111-1111-4111-8111-111111111111','notes-rls-a@example.invalid',now()),('22222222-2222-4222-8222-222222222222','notes-rls-b@example.invalid',now());
+update app_private.account_access set status='approved' where user_id in ('11111111-1111-4111-8111-111111111111','22222222-2222-4222-8222-222222222222');
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}',true);
 insert into public.private_notes (id,title,body) values ('33333333-3333-4333-8333-333333333333','RLS test','private');
