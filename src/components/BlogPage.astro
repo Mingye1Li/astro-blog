@@ -1,6 +1,19 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import Text from './Text.astro';
+import { publicPosts } from '../lib/public-posts.js';
+import { summary, postPath } from '../lib/blog.js';
+Astro.response.headers.set('Cache-Control', 'no-store');
+const page = Math.min(10000, Math.max(1, Number.parseInt(Astro.url.searchParams.get('page') || '1') || 1));
+let posts = [], failed = false;
+try {
+  const legacy = Astro.url.searchParams.get('post');
+  if (legacy && /^[0-9a-f-]{36}$/i.test(legacy)) {
+    const found = await publicPosts({id: `eq.${legacy}`, limit:'1'});
+    if (found[0]) return Astro.redirect(postPath(found[0].slug), 302);
+  }
+  posts = await publicPosts({offset:String((page - 1) * 12), limit:'13'});
+} catch { failed = true; Astro.response.status = 503; }
 ---
 <SiteLayout page="blog">
   <section class="blog-intro">
@@ -8,9 +21,18 @@ import Text from './Text.astro';
     <Text as="h1" k="blog.title" />
     <Text as="p" class="lead" k="blog.description" />
   </section>
-  <p id="blogState" class="empty-state" role="status" data-i18n="blog.loading">正在加载文章……</p>
-  <div id="blogPosts" class="blog-posts"></div>
-  <Text as="button" id="blogMore" class="secondary compact" type="button" hidden k="blog.more" />
-  <noscript>Enable JavaScript to read published posts. / 请启用 JavaScript 阅读公开文章。</noscript>
+  {(failed || !posts.length) && <Text as="p" class="empty-state" role="status" k={failed ? 'blog.error' : 'blog.empty'} />}
+  <div class="blog-posts">
+    {posts.slice(0,12).map(post => <article class="blog-post">
+      <time class="muted" datetime={post.published_at} data-localized-date>{post.published_at.slice(0,10)}</time>
+      <h2><a href={postPath(post.slug)}>{post.title}</a></h2>
+      <p class="lead">{summary(post.body)}</p>
+      <Text as="a" href={postPath(post.slug)} k="blog.read" />
+    </article>)}
+  </div>
+  <nav class="blog-pagination" aria-label="Pagination">
+    {page > 1 && <Text as="a" href={'/blog/?page=' + (page - 1)} k="blog.previous" />}
+    {posts.length > 12 && <Text as="a" href={'/blog/?page=' + (page + 1)} k="blog.more" />}
+  </nav>
   <script>import '../scripts/blog.js';</script>
 </SiteLayout>

@@ -1,6 +1,6 @@
 export const resources = {
   en: { translation: {
-    blog: { nav: 'Blog', login: 'Sign in', eyebrow: 'LIUBAI JOURNAL', title: 'Ideas worth sharing.', description: 'Notes, stories, and things learned along the way.', loading: 'Loading posts…', empty: 'No published posts yet. Check back soon.', notFound: 'This post is unavailable or private.', error: 'Could not load posts. Please try again.', more: 'More posts', visibility: 'Visibility', private: 'Private — only you', published: 'Published — everyone', visibilityHelp: 'Choose Published and save to share on the blog. Choose Private and save to remove it from public view.', publishConfirm: 'Publish these changes? Anyone can read this post on the public blog.' },
+    blog: { read: 'Read post →', back: '← All posts', previous: 'Previous posts', nav: 'Blog', login: 'Sign in', eyebrow: 'LIUBAI JOURNAL', title: 'Ideas worth sharing.', description: 'Notes, stories, and things learned along the way.', loading: 'Loading posts…', empty: 'No published posts yet. Check back soon.', notFound: 'This post is unavailable or private.', error: 'Could not load posts. Please try again.', more: 'More posts', visibility: 'Visibility', private: 'Private — only you', published: 'Published — everyone', visibilityHelp: 'Choose Published and save to share on the blog. Choose Private and save to remove it from public view.', publishConfirm: 'Publish these changes? Anyone can read this post on the public blog.' },
     page: { title: 'Liubai · Blog', description: 'Stories and ideas from the Liubai journal.' },
     brand: { name: 'Liubai', sub: 'PERSONAL SPACE', tagline: 'A little room for your thoughts.' },
     preferences: { language: 'Language', theme: 'Theme', system: 'System', light: 'Light', dark: 'Dark' },
@@ -17,7 +17,7 @@ export const resources = {
     noscript: 'Enable JavaScript to sign in and read your notes.'
   } },
   'zh-CN': { translation: {
-    blog: { nav: '博客', login: '登录', eyebrow: '留白日志', title: '值得分享的想法。', description: '记录故事、灵感与成长中的发现。', loading: '正在加载文章……', empty: '还没有公开文章，欢迎稍后再来。', notFound: '文章不存在或已设为私密。', error: '无法加载文章，请重试。', more: '更多文章', visibility: '可见范围', private: '私密 — 仅自己可见', published: '已发布 — 所有人可见', visibilityHelp: '选择公开并保存，即可发布到博客。选择私密并保存，即可取消公开。', publishConfirm: '发布这些更改？任何人都可以在公开博客阅读这篇文章。' },
+    blog: { read: '阅读全文 →', back: '← 全部文章', previous: '上一页', nav: '博客', login: '登录', eyebrow: '留白日志', title: '值得分享的想法。', description: '记录故事、灵感与成长中的发现。', loading: '正在加载文章……', empty: '还没有公开文章，欢迎稍后再来。', notFound: '文章不存在或已设为私密。', error: '无法加载文章，请重试。', more: '更多文章', visibility: '可见范围', private: '私密 — 仅自己可见', published: '已发布 — 所有人可见', visibilityHelp: '选择公开并保存，即可发布到博客。选择私密并保存，即可取消公开。', publishConfirm: '发布这些更改？任何人都可以在公开博客阅读这篇文章。' },
     page: { title: '留白 · 博客', description: '留白日志，分享故事与想法。' },
     brand: { name: '留白', sub: '私人空间', tagline: '给想法，留一点空间。' },
     preferences: { language: '语言', theme: '主题', system: '跟随系统', light: '浅色', dark: '深色' },
@@ -40,3 +40,4 @@ export const defaultLanguage = 'zh-CN';
 export function fallback(key) {
   return key.split('.').reduce((value, part) => value?.[part], resources[defaultLanguage].translation) ?? key;
 }
+

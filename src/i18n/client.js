@@ -29,8 +29,10 @@ function translatedOptions(options = {}) {
 }
 export function translatePage() {
   document.documentElement.lang = language();
-  document.title = t('page.title');
-  document.querySelector('meta[name="description"]')?.setAttribute('content', t('page.description'));
+  if (!document.querySelector('title')?.dataset.postTitle) {
+    document.title = t('page.title');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', t('page.description'));
+  }
   document.querySelectorAll('[data-i18n]').forEach((element) => {
     const options = translatedOptions(JSON.parse(element.dataset.i18nOptions || '{}'));
     element.textContent = t(element.dataset.i18n, options);

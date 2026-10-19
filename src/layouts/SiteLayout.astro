@@ -3,17 +3,17 @@ import '../styles/global.css';
 import Preferences from '../components/Preferences.astro';
 import { fallback as t } from '../i18n/resources.js';
 import Text from '../components/Text.astro';
-const { page = 'home' } = Astro.props;
+const { page = 'home', title, description } = Astro.props;
 ---
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="description" content="登录你的私人笔记空间。" />
+    <meta name="description" content={description || t('page.description')} />
     <meta name="generator" content={Astro.generator} />
     <meta name="color-scheme" content="light dark" />
-    <title>{t('page.title')}</title>
+    <title data-post-title={title}>{title ? `${title} · Liubai` : t('page.title')}</title>
     <script is:inline>
       // Apply the saved theme before the first paint; system mode is handled by CSS.
       try {

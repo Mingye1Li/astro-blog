@@ -19,6 +19,10 @@ do $$ begin
 end $$;
 set local role authenticated;
 update public.private_notes set is_published=true where id='33333333-3333-4333-8333-333333333333';
+update public.private_notes set title='Changed title', slug='override' where id='33333333-3333-4333-8333-333333333333';
+do $$ begin
+ if not exists(select id from public.private_notes where id='33333333-3333-4333-8333-333333333333' and slug='blog-privacy-fixture-33333333-3333-4333-8333-333333333333') then raise exception 'Slug was not stable'; end if;
+end $$;
 set local role anon;
 do $$ begin
  if not exists(select id from public.private_notes where id='33333333-3333-4333-8333-333333333333' and published_at is not null and body='**Private**') then raise exception 'Published post not readable'; end if;

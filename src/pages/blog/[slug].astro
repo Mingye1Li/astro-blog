@@ -1,0 +1,22 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Text from '../../components/Text.astro';
+import { publicPosts } from '../../lib/public-posts.js';
+import { summary } from '../../lib/blog.js';
+Astro.response.headers.set('Cache-Control', 'no-store');
+let post, failed = false;
+try {
+  const slug = Astro.params.slug || '';
+  if (/^[a-z0-9一-鿿-]{1,120}$/.test(slug)) [post] = await publicPosts({slug:`eq.${slug}`,limit:'1'});
+} catch { failed = true; }
+if (!post) Astro.response.status = failed ? 503 : 404;
+---
+<SiteLayout page="blog" title={post?.title} description={post && summary(post.body)}>
+  <Text as="a" href="/blog/" k="blog.back" />
+  {post ? <article class="blog-post blog-detail">
+    <time class="muted" datetime={post.published_at} data-localized-date>{post.published_at.slice(0,10)}</time>
+    <h1>{post.title}</h1>
+    <div id="postBody" class="markdown-body" data-markdown={post.body}><pre class="markdown-fallback">{post.body}</pre></div>
+  </article> : <Text as="h1" k={failed ? 'blog.error' : 'blog.notFound'} />}
+  <script>import '../../scripts/blog.js';</script>
+</SiteLayout>
