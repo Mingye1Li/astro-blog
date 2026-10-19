@@ -1,0 +1,15 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import AuthPanel from './AuthPanel.astro';
+import Dashboard from './Dashboard.astro';
+const { page = 'home' } = Astro.props;
+---
+<SiteLayout>
+  <div id="app" data-page={page}>
+    <AuthPanel />
+    <Dashboard page={page} />
+    <p id="message" role="status" aria-live="polite"></p>
+    <noscript>请启用 JavaScript 来登录和读取笔记。 / Enable JavaScript to sign in and read your notes.</noscript>
+  </div>
+  <script>import '../scripts/app.js';</script>
+</SiteLayout>
